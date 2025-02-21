@@ -12,7 +12,7 @@ function inputArea(label: string, img: string, placeholder: string, password: bo
                 <input className="outline-none w-full" type={password ? "password" : ""} placeholder={placeholder} value={value} onChange={e => setValue(e.target.value)} />
             </div>
             <div className="h-[2px] w-full bg-gray-200 absolute bottom-0"></div>
-            <div className="transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-[2px] w-0 group-focus-within:w-full absolute bottom-0"></div>
+            <div className="transition-all duration-300 bg-blue-500 h-[2px] w-0 group-focus-within:w-full absolute bottom-0"></div>
         </div>
     </>
 }
@@ -93,7 +93,7 @@ export default function Signup(): React.ReactElement {
             {inputArea("Confirm password", "/media/key.svg", "•••••••••", true, confirmPassword, setConfirmPassword)}
 
 
-            <button className="bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 rounded-full w-full self-center text-2xl text-white flex justify-center items-center p-1 mt-10" onClick={async () => (await requestSignUp())}>Sign up</button>
+            <button className="rounded-full w-full self-center text-2xl hover:text-white bg-gray-100 hover:bg-blue-500 flex justify-center items-center p-1 mt-10 py-2" onClick={async () => (await requestSignUp())}>Sign up</button>
 
             <Link to="/sign-in" className="self-center mt-6"><p className="text-blue-950">Sign in</p></Link>
 

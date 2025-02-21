@@ -4,7 +4,7 @@ import { UserContext } from "./Context";
 import { get } from "./Network";
 
 // Interfaces
-import { UserData, RequestResponse } from "./Interfaces";
+import { UserData, RequestResponse, Sentence, Token } from "./Interfaces";
 
 // Components
 import Header from "./components/other/Header";
@@ -14,6 +14,7 @@ import Signin from "./components/user/Signin";
 import Dashboard from "./components/main/Dashboard";
 import Profile from "./components/user/Profile";
 import { NoPage } from "./components/other/NoPage";
+import Add from "./components/main/Add";
 
 function App(): React.ReactElement {
   // Context
@@ -38,14 +39,18 @@ function App(): React.ReactElement {
 
     // Update user
     interface responseType {
-      // logs: Log[],
-      // projects: Project[]
+      sentences: Sentence[];
+      tokens: Token[];
     }
+
     async function updateUser(tempUser: UserData): Promise<void> {
-      const response: RequestResponse<responseType> = await get("auth/get-updates", { token: tempUser?.token })
+      const response: RequestResponse<responseType> = await get("main/get-updates", { token: tempUser?.token })
+      console.log(response.data)
       if (response.success && tempUser?.username) {
         setUser({
           ...tempUser,
+          sentences: response.data.sentences,
+          tokens: response.data.tokens
         })
       }
     }
@@ -92,6 +97,7 @@ function App(): React.ReactElement {
             <Route path="profile" element={<Profile />} />
 
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="add" element={<Add />} />
             <Route path="*" element={<NoPage />} />
           </Route>
         </Routes>

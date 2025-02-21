@@ -1,32 +1,31 @@
 import { Dispatch, SetStateAction } from "react";
 
 
-/** Example interfaces for you to use **/
-// export interface Log {
-//     _id: string,
-//     project: string
-//     date: Date;
-//     goal: string;
-//     notes: string;
-// }
+export interface Sentence {
+    _id: string;
+    owner: string;
+    tokens: string[];
+    bucket: number;
+    last_reviewed?: Date;
+    flagged: boolean;
+}
 
-// export interface Project {
-//     _id: string;
-//     coverUrl: string;
-//     name: string;
-//     goal: string;
-//     dateStarted: Date;
-//     duration: number;
-//     logs: Log[];
-// }
+export interface Token {
+    _id: string;
+    owner: string;
+    characters: string;
+    pinyin: string;
+    punctuation?: boolean;
+    correct: [number];
+}
 
 export type SafeData = {
     username: string;
     email: string;
     date_joined: Date;
     token: string;
-    // projects: Project[];
-    // logs: Log[];
+    sentences: Sentence[];
+    tokens: Token[];
 };
 export type UserData = SafeData | null | undefined;
 

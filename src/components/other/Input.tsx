@@ -12,7 +12,7 @@ export default function Input({ placeholder="", password=false }) {
                 <input className="outline-none w-full" type={password ? "password" : ""} placeholder={placeholder} value={value} onChange={e => setValue(e.target.value)} />
             </div>
             <div className="h-[2px] w-full bg-gray-200 absolute bottom-0"></div>
-            <div className="transition-all duration-300 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-[2px] w-0 group-focus-within:w-full absolute bottom-0"></div>
+            <div className="transition-all duration-300 bg-blue-500 h-[2px] w-0 group-focus-within:w-full absolute bottom-0"></div>
         </div>
         </>
 }
