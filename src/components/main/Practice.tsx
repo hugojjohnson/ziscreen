@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import useUser from "../../hooks/useUser";
 import { useNavigate } from "react-router-dom";
 import { Sentence, Token } from "../../Interfaces";
-import HoverImage from "../other/HoverImage";
 import { post } from "../../Network";
 
 const SECOND = 1_000
@@ -78,11 +77,13 @@ export default function Practice(): React.ReactElement {
                 }
             }
         }
+        setToken(undefined)
+        setSentence(undefined)
     }, [user])
 
 
     /** ========== JSX ========== **/
-    if (!sentence || !token) { return <p>You're out of tokens. </p> }
+    if (!sentence || !token) { return <div className="flex flex-col items-center mt-20"><p>You're all done for now! Come back later to practice more Hanzi.</p></div> }
 
     return <div>
         <div className="flex flex-row justify-between">
