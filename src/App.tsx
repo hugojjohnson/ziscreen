@@ -15,6 +15,7 @@ import Dashboard from "./components/main/Dashboard";
 import Profile from "./components/user/Profile";
 import { NoPage } from "./components/other/NoPage";
 import Add from "./components/main/Add";
+import Practice from "./components/main/Practice";
 
 function App(): React.ReactElement {
   // Context
@@ -25,7 +26,9 @@ function App(): React.ReactElement {
 
   useEffect(() => {
     if (import.meta.env.DEV) {
-      console.log("Running in development environment.")
+      console.debug("Running in a dev environment.")
+    } else {
+      console.debug("Running in a prod environment.")
     }
 
     const tempUser = JSON.parse(localStorage.getItem("ziScreenUser") || "{}")
@@ -34,7 +37,7 @@ function App(): React.ReactElement {
       return
     }
 
-    setUser(tempUser)
+    // setUser(tempUser)
     updateUser(tempUser)
 
     // Update user
@@ -71,7 +74,10 @@ function App(): React.ReactElement {
 
 
   // Component
-  if (user === null || user === undefined) {
+  if (user === undefined) {
+    return <div className="flex flex-col items-center w-full h-screen"><img className="pt-56 w-56" src="/media/loading.jpg" alt="loading"/></div> // TODO: Make a loading screen
+  }
+  if (user === null) {
     return (
       <UserContext.Provider value={[user, setUser]}>
         <BrowserRouter basename="ziscreen">
@@ -98,6 +104,7 @@ function App(): React.ReactElement {
 
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="add" element={<Add />} />
+            <Route path="practice" element={<Practice />} />
             <Route path="*" element={<NoPage />} />
           </Route>
         </Routes>

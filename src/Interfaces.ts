@@ -6,8 +6,9 @@ export interface Sentence {
     owner: string;
     tokens: string[];
     bucket: number;
-    last_reviewed?: Date;
+    last_reviewed: string;
     flagged: boolean;
+    english: string;
 }
 
 export interface Token {
@@ -16,13 +17,14 @@ export interface Token {
     characters: string;
     pinyin: string;
     punctuation?: boolean;
-    correct: [number];
+    bucket: number;
+    last_reviewed: string;
 }
 
 export type SafeData = {
     username: string;
     email: string;
-    date_joined: Date;
+    date_joined: string;
     token: string;
     sentences: Sentence[];
     tokens: Token[];
@@ -36,11 +38,11 @@ export type User = [UserData, Dispatch<SetStateAction<UserData>>]
 type RequestResponseSuccess<T> = {
     success: true;
     data: T;
-    status?: number;
+    status: number;
 };
 type RequestResponseFailure = {
     success: false;
     data: string;
-    status?: number;
+    status: number;
 };
 export type RequestResponse<T> = RequestResponseSuccess<T> | RequestResponseFailure;

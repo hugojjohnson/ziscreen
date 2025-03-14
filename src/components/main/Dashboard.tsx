@@ -33,11 +33,13 @@ export default function Dashboard(): React.ReactElement {
                 <p className="text-2xl mt-8 mb-3">Past Sentences</p>
                 <div className="flex flex-col gap-3">
                     {
-                        user.sentences.map(sentence => <p key={sentence._id} className="text-3xl">{sentence.tokens.map((token, token_index) => {
+                        user.sentences.map(sentence => <div key={sentence._id}><p key={sentence._id} className="text-3xl">{sentence.tokens.map((token, token_index) => {
                             const myToken = user.tokens.find(idk => idk._id === token)
                             if (myToken === undefined) { throw new Error("Token not found.") }
                             return <span key={token_index} className={`${myToken.punctuation ? "text-red-700" : "text-blue-500"}`}>{myToken.characters}</span>
-                        })}</p>)
+                        })}</p>
+                        <p>{sentence.english}</p>
+                        </div>)
                     }
                 </div>
             </div>
@@ -45,7 +47,7 @@ export default function Dashboard(): React.ReactElement {
                 <p className="text-2xl">Your characters</p>
                 <div className="grid grid-cols-3 gap-8 place-items-center p-4 text-white mt-10 text-3xl">
                     {
-                        user.tokens.filter(idk => idk.punctuation === undefined).map(token => token.characters.split("").map(char => <div className="w-20 h-20 rounded-md bg-blue-500 flex justify-center items-center"><p>{char}</p></div>))
+                        user.tokens.filter(idk => idk.punctuation === undefined).map(token => token.characters.split("").map(char => <div id={char} className="w-20 h-20 rounded-md bg-blue-500 flex justify-center items-center"><p>{char}</p></div>))
                     }
                 </div>
             </div>

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { post } from "../../Network";
 import { Link, useNavigate } from "react-router-dom";
-import { RequestResponse } from "../../Interfaces";
 
 function inputArea(label: string, img: string, placeholder: string, password: boolean = false, value: string, setValue: React.Dispatch<React.SetStateAction<string>>): React.ReactElement {
     return <>
@@ -26,7 +25,7 @@ export default function Signup(): React.ReactElement {
     const [errorText, setErrorText] = useState("")
 
     /** ========== Functions ========== **/
-    async function requestSignUp(): Promise<RequestResponse<unknown>> {
+    async function requestSignUp(): Promise<void> {
         // encrypt the password before sending it
         // from https://stackoverflow.com/questions/18338890
         async function saltify(data: string): Promise<string> {
@@ -47,22 +46,16 @@ export default function Signup(): React.ReactElement {
         }
 
         if (username === "" || password === "") {
-            return {
-                success: false,
-                data: "Please fill in the username and password."
-            }
+            setErrorText("Please fill in the username and password.")
+            return
         }
         if (password !== confirmPassword) {
-            return {
-                success: false,
-                data: "Passwords do not match."
-            }
+            setErrorText("Passwords do not match.")
+            return
         }
         if (!email.includes("@")) {
-            return {
-                success: false,
-                data: "Email is not valid."
-            }
+            setErrorText("Email is not valid.")
+            return
         }
         const salt = await saltify(email + password)
         const response = await post("users/sign-up/email", {}, {
@@ -74,11 +67,10 @@ export default function Signup(): React.ReactElement {
         })
         if (response.success) {
             navigate("/sign-in")
-            return response
+            return
         } else {
             setErrorText(response.data)
         }
-        return response
     }
 
     /** ========== JSX ========== **/

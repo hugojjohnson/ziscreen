@@ -19,6 +19,7 @@ type token = {
 export default function Add(): React.ReactElement {
     const [user] = useUser()
     const [sentence, setSentence] = useState<string>("")
+    const [english, setEnglish] = useState<string>("")
     const [tokens, setTokens] = useState<token[]>([])
     const [draggedItem, setDraggedItem] = useState<token | null>(null);
     const navigate = useNavigate()
@@ -69,10 +70,13 @@ export default function Add(): React.ReactElement {
     };
     
     const addSentence = async () => {
-        type returnTokensType = { characters: string, pinyin: string, punctuation?: boolean }[]
-        const returnTokens: returnTokensType = tokens.map(t => ({ characters: t.chars.map(idk => idk.value).join(""), pinyin: t.chars.map(idk => idk.pinyin[idk.index]).join(" "), punctuation: t.punctuation }))
+        type returnTokensType = { characters: string, pinyin: string, punctuation?: boolean, bucket: 0, last_reviewed: string }[]
+        const returnTokens: returnTokensType = tokens.map(t => ({ characters: t.chars.map(idk => idk.value).join(""), pinyin: t.chars.map(idk => idk.pinyin[idk.index]).join(" "), punctuation: t.punctuation, bucket: 0, last_reviewed: new Date().toISOString() }))
         const response = await post("/main/add-sentence", { token: user.token }, {
-            tokens: returnTokens
+            tokens: returnTokens,
+            english: english,
+            bucket: 0,
+            last_reviewed: new Date().toISOString()
         })
         if (response.success) {
             navigate("/")
@@ -85,8 +89,11 @@ export default function Add(): React.ReactElement {
         <div className="flex flex-row justify-between">
             <div className="w-full">
                 <p className="text-2xl">Add a sentence</p>
+                <p>Mandarin</p>
                 <input value={sentence} onChange={e => setSentence(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && characterify()} className="w-2/3 bg-gray-50 border-[1px] rounded-md border-gray-500 p-2" />
                 <button className="rounded-md bg-gray-100 hover:bg-blue-500 hover:text-white text-xl w-32 h-10 ml-5" onClick={characterify}>Split</button>
+                <p className="mt-2">English</p>
+                <input value={english} onChange={e => setEnglish(e.target.value)} className="w-2/3 bg-gray-50 border-[1px] rounded-md border-gray-500 p-2" />
             </div>
         </div>
 

@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../../Context";
-import { get } from "../../Network";
 
-import { User, RequestResponse } from "../../Interfaces";
+import { Sentence, Token, User } from "../../Interfaces";
 import { Link, useNavigate } from "react-router-dom";
+import { get, post } from "../../Network";
 
 function inputArea(label: string, img: string, placeholder: string, password: boolean=false, value: string, updateValue: React.Dispatch<React.SetStateAction<string>>): React.ReactElement {
     return <>
@@ -25,15 +25,18 @@ export default function Signin(): React.ReactElement {
     const navigate = useNavigate()
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
+    const [errorText, setErrorText] = useState<string>("")
 
     /** ========== Functions ========== **/
     interface responseType {
         user: { username: string, email: string, date_joined: string },
         token: { value: string },
+        sentences: Sentence[],
+        tokens: Token[]
         // projects: Project[],
         // logs: Log[]
     }
-    async function requestLogin(): Promise<RequestResponse<responseType>> {
+    async function requestLogin(): Promise<void> {
         // encrypt the password before sending it
         // from https://stackoverflow.com/questions/18338890
         async function saltify(data: string): Promise<string> {
@@ -54,16 +57,12 @@ export default function Signin(): React.ReactElement {
         }
 
         if (email === "" || password === "") {
-            return {
-                success: false,
-                data: "Please fill in the email and password."
-            }
+            setErrorText("Please fill in the email and password.")
+            return
         }
         if (!email.includes("@")) {
-            return {
-                success: false,
-                data: "email is invalid."
-            }
+            setErrorText("Email is invalid.")
+            return
         }
 
         const salt = await saltify(email + password)
@@ -75,16 +74,17 @@ export default function Signin(): React.ReactElement {
             setUser({
                 username: response.data.user.username,
                 email: response.data.user.email,
-                date_joined: new Date(response.data.user.date_joined),
+                date_joined: response.data.user.date_joined,
                 token: response.data.token.value,
-                // projects: response.data.projects,
-                // logs: response.data.logs
+                sentences: response.data.sentences,
+                tokens: response.data.tokens
             });
             navigate('/');
         }
-        return {
-            success: false,
-            data: "An unknown error occurred."
+        if (response.status === 401) {
+            setErrorText("Username or password incorrect. Please try again.")
+        } else {
+            setErrorText("An unknown error occurred.")
         }
     }
 
@@ -100,6 +100,8 @@ export default function Signin(): React.ReactElement {
             <p className="text-gray-500 text-sm text-right mb-5 mt-1 hover:cursor-pointer">Forgot password?</p>
 
             <button className="rounded-full w-full self-center text-2xl hover:text-white bg-gray-100 hover:bg-blue-500 flex justify-center items-center p-1 mt-10 py-2" onClick={async () => (await requestLogin())}>Sign in</button>
+
+            <p>{errorText}</p>
 
             <Link to="/sign-up" className="self-center mt-6"><p className="text-blue-950">Sign up</p></Link>
 
