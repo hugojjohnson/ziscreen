@@ -41,8 +41,6 @@ export default function Add(): React.ReactElement {
     }
 
     const handleDragStart = (e: React.DragEvent<HTMLParagraphElement>, item: token) => {
-        console.log(e)
-        console.log(item)
         setDraggedItem(item);
         e.dataTransfer.setData("text/plain", item.toString());
     };
@@ -53,20 +51,15 @@ export default function Add(): React.ReactElement {
 
     const handleDrop = (e: React.DragEvent<HTMLParagraphElement>, targetItem: token) => {
         e.preventDefault();
-        // console.log('Dragged Item:', draggedItem);
-        // console.log('Target Item:', targetItem);
-        console.log("Dragged item key: " + targetItem.tempKey)
-        console.log("Target key: " + draggedItem?.tempKey)
         let temp = structuredClone(tokens)
         const draggedIndex = temp.findIndex(idk => idk.tempKey === draggedItem?.tempKey)
         const targetIndex = temp.findIndex(idk => idk.tempKey === targetItem.tempKey)
-        if (draggedIndex - targetIndex !== 1) { console.log(draggedIndex - targetIndex); return }
+        if (draggedIndex - targetIndex !== 1) { return }
         if (temp[targetIndex].punctuation || temp[draggedIndex].punctuation) { return }
         
         temp[targetIndex].chars = temp[targetIndex].chars.concat(temp[draggedIndex].chars)
         temp = temp.filter(idk => idk.tempKey !== draggedItem?.tempKey)
         setTokens(temp)
-        console.log(temp)
     };
     
     const addSentence = async () => {
@@ -81,7 +74,6 @@ export default function Add(): React.ReactElement {
         if (response.success) {
             navigate("/")
         }
-        console.log(response)
     }
 
     /** ========== JSX ========== **/

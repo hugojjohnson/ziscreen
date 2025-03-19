@@ -28,6 +28,8 @@ export type SafeData = {
     token: string;
     sentences: Sentence[];
     tokens: Token[];
+    daily_date: string;
+    daily_tokens: string[];
 };
 export type UserData = SafeData | null | undefined;
 

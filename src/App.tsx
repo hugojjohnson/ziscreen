@@ -22,7 +22,7 @@ function App(): React.ReactElement {
   const [user, setUser] = useState<UserData>(undefined);
 
   // Environment variables are as easy as that! Just don't forget to prefix them with VITE_.
-  // console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID)
+  // like this: (import.meta.env.VITE_GOOGLE_CLIENT_ID)
 
   useEffect(() => {
     if (import.meta.env.DEV) {
@@ -44,16 +44,19 @@ function App(): React.ReactElement {
     interface responseType {
       sentences: Sentence[];
       tokens: Token[];
+      daily_date: string;
+      daily_tokens: string[];
     }
 
     async function updateUser(tempUser: UserData): Promise<void> {
       const response: RequestResponse<responseType> = await get("main/get-updates", { token: tempUser?.token })
-      console.log(response.data)
       if (response.success && tempUser?.username) {
         setUser({
           ...tempUser,
           sentences: response.data.sentences,
-          tokens: response.data.tokens
+          tokens: response.data.tokens,
+          daily_date: response.data.daily_date,
+          daily_tokens: response.data.daily_tokens
         })
       }
     }
@@ -65,10 +68,8 @@ function App(): React.ReactElement {
     }
     if (user?.token) {
       localStorage.setItem("ziScreenUser", JSON.stringify(user))
-      console.log("User changed.")
     } else {
       localStorage.removeItem("ziScreenUser")
-      console.log("Signed out.")
     }
   }, [user])
 

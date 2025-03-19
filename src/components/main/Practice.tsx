@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import useUser from "../../hooks/useUser";
-import { useNavigate } from "react-router-dom";
 import { Sentence, Token } from "../../Interfaces";
 import { post } from "../../Network";
 
@@ -18,7 +17,7 @@ const DAY = 24*HOUR
 
 
 const bucket_time = (key: number): number => {
-    const bucket_times: Record<number, number> = { 0: 0, 1: 7*MINUTE, 2: DAY, 3: DAY, 4: 2 * DAY, 5: 4 * DAY, 6: 7 * DAY }
+    const bucket_times: Record<number, number> = { 0: 0, 1: 10*MINUTE, 2: DAY, 3: DAY, 4: 2 * DAY, 5: 4 * DAY, 6: 7 * DAY }
     return bucket_times[key] ?? (key-6)*4*DAY + 7*DAY;
 }
 
@@ -28,16 +27,12 @@ export default function Practice(): React.ReactElement {
     const [sentence, setSentence] = useState<Sentence | undefined>(undefined)
     const [token, setToken] = useState<Token | undefined>(undefined)
     const [showAnswer, setShowAnswer] = useState<boolean>(false)
-    const navigate = useNavigate()
+    const [showDialogue, setShowDialogue] = useState<boolean>(false) // 0; still on reviews. 1; showing. 2; shown.
 
-    console.log(token ? user.tokens.indexOf(token) : "")
     /** ========== Functions ========== **/
     function findToken(id: string) {
         const myToken = user.tokens.find(idk => idk._id === id)
         if (myToken === undefined) {
-            console.log("Error looking for")
-            console.log(id)
-            console.log(user.tokens)
             throw new Error("Token not found.")
         }
         return myToken
@@ -49,8 +44,6 @@ export default function Practice(): React.ReactElement {
         const newBucket = (token.bucket+rating) < 0 ? token.bucket : token.bucket+rating
         const response = await post<Token>("main/review-token", { token: user.token}, { tokenId: token._id, newBucket: newBucket, lastReviewed: new Date().toISOString() })
         if (response.success) {
-            console.log(response.data)
-            // TODO: update the user.
             const user2 = structuredClone(user)
             user2.tokens[user.tokens.indexOf(token)] = response.data
             setUser(user2)
@@ -64,14 +57,33 @@ export default function Practice(): React.ReactElement {
     useEffect(() => {
         for (const sentence of user.sentences) {
             for (const tokenId of sentence.tokens) {
-                const token = findToken(tokenId)
-                if (new Date().getTime() - new Date(token.last_reviewed).getTime() > bucket_time(token.bucket)) {
+                const localToken = findToken(tokenId)
+                if (localToken.punctuation) { continue }
+                if (localToken.bucket === 0) { continue }
+                if (new Date().getTime() - new Date(localToken.last_reviewed).getTime() > bucket_time(localToken.bucket)) {
                     console.log(new Date())
-                    console.log(new Date(token.last_reviewed))
-                    console.log(token.last_reviewed)
-                    console.log(`This token is in bucket ${token.bucket}. Should be reviewed after ${new Date(new Date().getTime() - new Date(token.last_reviewed).getTime())} or \n ${new Date().getTime() - new Date(token.last_reviewed).getTime()}.`)
-                    console.log(`They are ${(new Date().getTime() - new Date(token.last_reviewed).getTime())/DAY} days apart, which is apparently more than ${bucket_time(token.bucket)}.`)
-                    setToken(token)
+                    console.log(new Date(localToken.last_reviewed))
+                    console.log(localToken.last_reviewed)
+                    console.log(`This token is in bucket ${localToken.bucket}. Should be reviewed after ${new Date(new Date().getTime() - new Date(localToken.last_reviewed).getTime())} or \n ${new Date().getTime() - new Date(localToken.last_reviewed).getTime()}.`)
+                    setToken(localToken)
+                    setSentence(sentence)
+                    return
+                }
+            }
+        }
+        for (const sentence of user.sentences) {
+            console.log(sentence.english)
+            for (const tokenId of sentence.tokens) {
+                const localToken = findToken(tokenId)
+                if (localToken.punctuation) { continue }
+                if (user.daily_tokens.includes(localToken._id)) {
+                    console.log("Partial match")
+                    console.log(localToken.bucket)
+                }
+                if (user.daily_tokens.includes(localToken._id) && localToken.bucket === 0) {
+                    
+                    if (localStorage.getItem("shownDialogue") !== new Date().toLocaleDateString()) { setShowDialogue(true) }
+                    setToken(localToken)
                     setSentence(sentence)
                     return
                 }
@@ -80,19 +92,19 @@ export default function Practice(): React.ReactElement {
         setToken(undefined)
         setSentence(undefined)
     }, [user])
-
-
+    
     /** ========== JSX ========== **/
     if (!sentence || !token) { return <div className="flex flex-col items-center mt-20"><p>You're all done for now! Come back later to practice more Hanzi.</p></div> }
+    if (showDialogue) {
+        return <div className="flex flex-col items-center mt-32">
+            <p>You're all caught up with your reviews. Ready to learn some new characters?</p>
+            <button onClick={() => { setShowDialogue(false); localStorage.setItem("shownDialogue", new Date().toLocaleDateString()) }} className="p-3 px-10 mt-10 rounded-md border-[1px] hover:border-none hover:bg-blue-500 hover:text-white">Begin</button>
+        </div>
+    }
 
     return <div>
-        <div className="flex flex-row justify-between">
-            <div className="w-full">
-                <p className="text-2xl">Practice</p>
-            </div>
-        </div>
 
-        <div className="flex flex-col gap-3 items-center">
+        <div className="mt-28 flex flex-col gap-3 items-center">
             <p key={sentence._id} className="text-3xl">{sentence.tokens.map((token_map, token_index) => {
                 const myToken = findToken(token_map)
                 return <span key={token_index} className={`${myToken._id === token._id ? " font-bold " : ""}`}>{myToken.pinyin}{myToken.punctuation ? "" : " "}</span>

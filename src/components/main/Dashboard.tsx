@@ -5,21 +5,31 @@ import { Link } from "react-router-dom";
 export default function Dashboard(): React.ReactElement {
     const [user] = useUser()
 
-    /** ========== useEffects ========== **/
-    // interface requestType {
-    //     quote: string
-    // }
-    // useEffect(() => {
-    //     const response = get<requestType>("main/get-quote", { token: user.token})
-    //     console.log(response)
-    // }, [user.token])
+    /** ========== Functions ========== **/
+    const dailyCard = (index: number) => {
+        if (index >= user.daily_tokens.length) { return { text: "", tailwind: "" } }
+        const t = user.tokens.filter(idk => idk._id == user.daily_tokens[index])[0]
+        if (t == undefined) { throw new Error ("Some token shenanigans are going on") }
+        return { text: t.characters, tailwind: bucketToColours(t.bucket) }
+    }
+    const bucketToColours = (bucket: number) => {
+        if (bucket === 0) {
+            return "bg-gray-300 text-black"
+        } else if (bucket < 5) {
+            return "bg-blue-500 text-white"
+        } else {
+            return "bg-yellow-500 text-white"
+        }
+    }
 
     /** ========== JSX ========== **/
     return <div>
         <div className="flex flex-row justify-between content-end">
             <div>
-                <p className="text-2xl">Your current sentence</p>
-                <p className="text-blue-500 text-4xl mt-2">你好，我的好朋友!</p>
+                <p className="text-2xl">Your characters for the day</p>
+                <div className="flex flex-row gap-5">
+                    { [0, 1, 2].map(i => <div key={i} className={`w-14 h-14 rounded-md ${dailyCard(i).tailwind} text-2xl flex items-center justify-center mt-5`}>{dailyCard(i).text}</div>) }
+                </div>
             </div>
             <button className="rounded-md bg-gray-300 hover:bg-gray-500 text-white text-xl w-32 h-16">Skip</button>
         </div>
@@ -47,7 +57,7 @@ export default function Dashboard(): React.ReactElement {
                 <p className="text-2xl">Your characters</p>
                 <div className="grid grid-cols-3 gap-8 place-items-center p-4 text-white mt-10 text-3xl">
                     {
-                        user.tokens.filter(idk => idk.punctuation === undefined).map(token => token.characters.split("").map(char => <div id={char} className="w-20 h-20 rounded-md bg-blue-500 flex justify-center items-center"><p>{char}</p></div>))
+                        user.tokens.filter(idk => idk.punctuation === undefined).map(token => token.characters.split("").map(char => <div id={char} className={`w-20 h-20 rounded-md ${bucketToColours(token.bucket)} flex justify-center items-center`}><p>{char}</p></div>))
                     }
                 </div>
             </div>

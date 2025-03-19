@@ -3,7 +3,7 @@ import { UserContext } from "../../Context";
 
 import { Sentence, Token, User } from "../../Interfaces";
 import { Link, useNavigate } from "react-router-dom";
-import { get, post } from "../../Network";
+import { get } from "../../Network";
 
 function inputArea(label: string, img: string, placeholder: string, password: boolean=false, value: string, updateValue: React.Dispatch<React.SetStateAction<string>>): React.ReactElement {
     return <>
@@ -32,9 +32,9 @@ export default function Signin(): React.ReactElement {
         user: { username: string, email: string, date_joined: string },
         token: { value: string },
         sentences: Sentence[],
-        tokens: Token[]
-        // projects: Project[],
-        // logs: Log[]
+        tokens: Token[],
+        daily_tokens: string[],
+        daily_date: string
     }
     async function requestLogin(): Promise<void> {
         // encrypt the password before sending it
@@ -77,7 +77,9 @@ export default function Signin(): React.ReactElement {
                 date_joined: response.data.user.date_joined,
                 token: response.data.token.value,
                 sentences: response.data.sentences,
-                tokens: response.data.tokens
+                tokens: response.data.tokens,
+                daily_tokens: response.data.daily_tokens,
+                daily_date: response.data.daily_date
             });
             navigate('/');
         }
