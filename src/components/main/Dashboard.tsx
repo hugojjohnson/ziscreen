@@ -28,7 +28,7 @@ export default function Dashboard(): React.ReactElement {
             <div>
                 <p className="text-2xl">Your characters for the day</p>
                 <div className="flex flex-row gap-5">
-                    { [0, 1, 2].map(i => <div key={i} className={`w-14 h-14 rounded-md ${dailyCard(i).tailwind} text-2xl flex items-center justify-center mt-5`}>{dailyCard(i).text}</div>) }
+                    { [0, 1, 2].map(i => <a href={"https://www.strokeorder.com/chinese/" + (dailyCard(i).text[0] || "")} target="blank" key={i} className={`w-14 h-14 rounded-md ${dailyCard(i).tailwind} text-2xl flex items-center justify-center mt-5`}>{dailyCard(i).text}</a>) }
                 </div>
             </div>
             <button className="rounded-md bg-gray-300 hover:bg-gray-500 text-white text-xl w-32 h-16">Skip</button>

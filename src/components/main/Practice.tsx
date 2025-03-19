@@ -117,13 +117,13 @@ export default function Practice(): React.ReactElement {
 
         {
             showAnswer && <div className="w-full flex flex-col items-center mt-10">
-                {/* <img src="https://www.strokeorder.com/assets/bishun/animation/26159.gif" alt="stroke order" /> */}
                 <p className="text-2xl">{token.pinyin}</p>
-                {/* <HoverImage characters={token.characters} src="https://www.strokeorder.com/assets/bishun/animation/26159.gif" alt="stroke order" /> */}
-                <div className="group relative">
+                {/* TODO: Show stroke order on hover */}
+                {/* <div className="group relative">
                     <p className="text-8xl text-blue-500 mt-2">{token.characters}</p>
                     <img src="https://www.strokeorder.com/assets/bishun/animation/26159.gif" alt="stroke order" className="absolute -top-5 left-0 w-40 h-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 object-contain" />
-                </div>
+                </div> */}
+                <a href={"https://www.strokeorder.com/chinese/" + token.characters[0]} target="blank" className="text-8xl text-blue-500 mt-2">{token.characters}</a>
 
                 <div className="flex flex-col gap-3 items-center mt-10">
                     <p key={sentence._id} className="text-3xl">{sentence.tokens.map((token, token_index) => {
