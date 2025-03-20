@@ -102,10 +102,10 @@ export default function Practice(): React.ReactElement {
         </div>
     }
 
-    return <div>
+    return <div className="text-center md:text-left">
 
-        <div className="mt-28 flex flex-col gap-3 items-center">
-            <p key={sentence._id} className="text-3xl">{sentence.tokens.map((token_map, token_index) => {
+        <div className="mt-28 flex flex-col gap-3 items-center mx-10 md:mx-0">
+            <p key={sentence._id} className="text-2xl md:text-3xl">{sentence.tokens.map((token_map, token_index) => {
                 const myToken = findToken(token_map)
                 return <span key={token_index} className={`${myToken._id === token._id ? " font-bold " : ""}`}>{myToken.pinyin}{myToken.punctuation ? "" : " "}</span>
             })}</p>
@@ -116,7 +116,7 @@ export default function Practice(): React.ReactElement {
 
 
         {
-            showAnswer && <div className="w-full flex flex-col items-center mt-10">
+            showAnswer && <div className="flex flex-col items-center mt-10 mx-10 md:mx-0">
                 <p className="text-2xl">{token.pinyin}</p>
                 {/* TODO: Show stroke order on hover */}
                 {/* <div className="group relative">
@@ -126,7 +126,7 @@ export default function Practice(): React.ReactElement {
                 <a href={"https://www.strokeorder.com/chinese/" + token.characters[0]} target="blank" className="text-8xl text-blue-500 mt-2">{token.characters}</a>
 
                 <div className="flex flex-col gap-3 items-center mt-10">
-                    <p key={sentence._id} className="text-3xl">{sentence.tokens.map((token, token_index) => {
+                    <p key={sentence._id} className="text-2xl md:text-3xl">{sentence.tokens.map((token, token_index) => {
                         const myToken = user.tokens.find(idk => idk._id === token)
                         if (myToken === undefined) { throw new Error("Token not found.") }
                         return <span key={token_index} className={`${myToken.punctuation ? "text-red-700" : "text-blue-500"}`}>{myToken.characters}</span>
@@ -134,10 +134,10 @@ export default function Practice(): React.ReactElement {
                     <p>{sentence.english}</p>
                 </div>
 
-                <div className="w-[60%] flex flex-row justify-around">
-                    <button className="rounded-md bg-gray-100 hover:bg-green-500 hover:text-white text-xl w-32 h-10 mt-10" onClick={() => reviewToken(1)}>Easy</button>
-                    <button className="rounded-md bg-gray-100 hover:bg-amber-500 hover:text-white text-xl w-32 h-10 mt-10" onClick={() => reviewToken(0)}>Medium</button>
-                    <button className="rounded-md bg-gray-100 hover:bg-red-500 hover:text-white text-xl w-32 h-10 mt-10" onClick={() => reviewToken(-1)}>Hard</button>
+                <div className="w-full md:w-[60%] flex flex-row justify-between md:justify-around">
+                    <button className="rounded-md bg-gray-100 hover:bg-green-500 hover:text-white text-xl w-20 md:w-32 h-10 mt-10" onClick={() => reviewToken(1)}>Easy</button>
+                    <button className="rounded-md bg-gray-100 hover:bg-amber-500 hover:text-white text-xl w-20 md:w-32 h-10 mt-10" onClick={() => reviewToken(0)}>Medium</button>
+                    <button className="rounded-md bg-gray-100 hover:bg-red-500 hover:text-white text-xl w-20 md:w-32 h-10 mt-10" onClick={() => reviewToken(-1)}>Hard</button>
                 </div>
             </div>
         }

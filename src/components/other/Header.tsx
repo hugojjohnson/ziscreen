@@ -20,7 +20,7 @@ export default function Header(): React.ReactElement {
         }
     </div>
     
-    <div className="max-w-screen-xl mx-auto my-10">
+    <div className="max-w-screen-xl mx-auto mt-10">
         <Outlet />
     </div>
     </>
