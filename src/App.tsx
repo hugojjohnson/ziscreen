@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import { UserContext } from "./Context";
 import { get } from "./Network";
 
@@ -81,7 +81,7 @@ function App(): React.ReactElement {
   if (user === null) {
     return (
       <UserContext.Provider value={[user, setUser]}>
-        <BrowserRouter basename="ziscreen">
+        <HashRouter basename="ziscreen">
           <Routes>
             <Route path="/" element={<Header />}>
               <Route index element={<Welcome />} />
@@ -90,14 +90,14 @@ function App(): React.ReactElement {
               <Route path="*" element={<NoPage />} />
             </Route>
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </UserContext.Provider>
     )
 
   }
   return (
     <UserContext.Provider value={[user, setUser]}>
-      <BrowserRouter basename="ziscreen">
+      <HashRouter basename="ziscreen">
         <Routes>
           <Route path="/" element={<Header />}>
             <Route index element={<Dashboard />} />
@@ -109,7 +109,7 @@ function App(): React.ReactElement {
             <Route path="*" element={<NoPage />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </UserContext.Provider>
   );
 }
