@@ -24,6 +24,8 @@ function App(): React.ReactElement {
   // Environment variables are as easy as that! Just don't forget to prefix them with VITE_.
   // like this: (import.meta.env.VITE_GOOGLE_CLIENT_ID)
 
+  console.log("Hi theree")
+
   useEffect(() => {
     if (import.meta.env.DEV) {
       console.debug("Running in a dev environment.")
@@ -76,7 +78,7 @@ function App(): React.ReactElement {
 
   // Component
   if (user === undefined) {
-    return <div className="flex flex-col items-center w-full h-screen"><img className="pt-56 w-56" src="/media/loading.jpg" alt="loading"/></div> // TODO: Make a loading screen
+    return <div className="flex flex-col items-center w-full h-screen"><img className="pt-56 w-56" src="./media/loading.jpg" alt="loading"/></div>
   }
   if (user === null) {
     return (

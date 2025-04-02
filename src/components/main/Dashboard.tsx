@@ -31,7 +31,7 @@ export default function Dashboard(): React.ReactElement {
                     { [0, 1, 2].map(i => <a href={"https://www.strokeorder.com/chinese/" + (dailyCard(i).text[0] || "")} target="blank" key={i} className={`w-14 h-14 rounded-md ${dailyCard(i).tailwind} text-2xl flex items-center justify-center mt-5`}>{dailyCard(i).text}</a>) }
                 </div>
             </div>
-            <button className="rounded-md bg-gray-300 hover:bg-gray-500 text-white text-xl w-32 h-16 hidden md:block">Skip</button>
+            {/* <button className="rounded-md bg-gray-300 hover:bg-gray-500 text-white text-xl w-32 h-16 hidden md:block">Skip</button> */}
         </div>
 
         <div className="flex flex-col items-center md:items-start md:flex-row gap-5 mt-5">
@@ -55,9 +55,9 @@ export default function Dashboard(): React.ReactElement {
             </div>
             <div className="w-full md:w-1/3 md:rounded-md bg-gray-100 min-h-screen p-5">
                 <p className="text-2xl text-center md:text-left">Your characters</p>
-                <div className="grid grid-cols-3 gap-8 place-items-center p-4 text-white mt-2 md:mt-10 text-3xl">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(40px,1fr))] gap-4 place-items-center p-2 text-white mt-2 md:mt-10 text-2xl">
                     {
-                        user.tokens.filter(idk => idk.punctuation === undefined).map(token => token.characters.split("").map(char => <div id={char} className={`w-20 h-20 rounded-md ${bucketToColours(token.bucket)} flex justify-center items-center`}><p>{char}</p></div>))
+                        user.tokens.filter(idk => idk.punctuation === undefined).map(token => token.characters.split("").map(char => <div id={char} className={`w-12 h-12 rounded-md ${bucketToColours(token.bucket)} flex justify-center items-center`}><p>{char}</p></div>))
                     }
                 </div>
             </div>

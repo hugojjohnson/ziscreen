@@ -96,8 +96,8 @@ export default function Signin(): React.ReactElement {
         <div className="bg-white w-96 h-[60%] rounded-lg shadow-lg flex flex-col px-12">
             <h1 className="text-3xl font-bold mt-10 self-center">Sign in</h1>
 
-            { inputArea("Email", "/media/user.png", "Type your email", false, email, setEmail)}
-            { inputArea("Password", "/media/key.svg", "•••••••••", true, password, setPassword)}
+            { inputArea("Email", "./media/user.png", "Type your email", false, email, setEmail)}
+            { inputArea("Password", "./media/key.svg", "•••••••••", true, password, setPassword)}
 
             <p className="text-gray-500 text-sm text-right mb-5 mt-1 hover:cursor-pointer">Forgot password?</p>
 
