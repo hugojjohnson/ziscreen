@@ -41,7 +41,13 @@ export default function Practice(): React.ReactElement {
     async function reviewToken(rating: -1 | 0 | 1) {
         setShowAnswer(!showAnswer)
         if (!token) throw new Error("No token")
-        const newBucket = (token.bucket+rating) < 0 ? token.bucket : token.bucket+rating
+        let newBucket = token.bucket+rating
+        if (token.bucket === 0 && rating === -1) { // Separate lower bounds depending on whether the word is 'known' or not.
+            newBucket = 0
+        }
+        if (token.bucket === 1 && rating === -1) {
+            newBucket = 1
+        }
         const response = await post<Token>("main/review-token", { token: user.token}, { tokenId: token._id, newBucket: newBucket, lastReviewed: new Date().toISOString() })
         if (response.success) {
             const user2 = structuredClone(user)
@@ -118,12 +124,15 @@ export default function Practice(): React.ReactElement {
         {
             showAnswer && <div className="flex flex-col items-center mt-10 mx-10 md:mx-0">
                 <p className="text-2xl">{token.pinyin}</p>
-                {/* TODO: Show stroke order on hover */}
-                {/* <div className="group relative">
-                    <p className="text-8xl text-blue-500 mt-2">{token.characters}</p>
-                    <img src="https://www.strokeorder.com/assets/bishun/animation/26159.gif" alt="stroke order" className="absolute -top-5 left-0 w-40 h-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 object-contain" />
-                </div> */}
-                <a href={"https://www.strokeorder.com/chinese/" + token.characters[0]} target="blank" className="text-8xl text-blue-500 mt-2">{token.characters}</a>
+                <div className="flex flex-row">
+                {
+                    token.characters.split("").map(char => <div key={char} className="group relative">
+                        <p className="text-8xl text-blue-500 mt-2">{char}</p>
+                        <img src={`https://www.strokeorder.com/assets/bishun/animation/${char.codePointAt(0)}.gif`} alt="stroke order" className="absolute -top-5 left-0 w-40 h-40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 object-contain" />
+                    </div>)
+                }
+                </div>
+                {/* <a href={"https://www.strokeorder.com/chinese/" + token.characters[0]} target="blank" className="text-8xl text-blue-500 mt-2">{token.characters}</a> */}
 
                 <div className="flex flex-col gap-3 items-center mt-10">
                     <p key={sentence._id} className="text-2xl md:text-3xl">{sentence.tokens.map((token, token_index) => {

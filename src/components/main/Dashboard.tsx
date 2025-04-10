@@ -7,10 +7,15 @@ export default function Dashboard(): React.ReactElement {
 
     /** ========== Functions ========== **/
     const dailyCard = (index: number) => {
-        if (index >= user.daily_tokens.length) { return { text: "", tailwind: "" } }
+        if (index >= user.daily_tokens.length) { return <p></p> }
         const t = user.tokens.filter(idk => idk._id == user.daily_tokens[index])[0]
         if (t == undefined) { throw new Error ("Some token shenanigans are going on") }
-        return { text: t.characters, tailwind: bucketToColours(t.bucket) }
+        // return { text: t.characters, tailwind: bucketToColours(t.bucket) }
+        return <div key={index.toString()} className="min-w-14 h-14 rounded-md ${dailyCard(i).tailwind} text-2xl flex items-center justify-center mt-5 bg-gray-300 text-black">
+            {
+                t.characters.split("").map(char => <a href={"https://www.strokeorder.com/chinese/" + char} target="blank" key={char}>{char}</a>)
+            }
+        </div>
     }
     const bucketToColours = (bucket: number) => {
         if (bucket === 0) {
@@ -28,7 +33,7 @@ export default function Dashboard(): React.ReactElement {
             <div className="flex flex-col items-center md:items-start">
                 <p className="text-2xl">Your characters for the day</p>
                 <div className="flex flex-row gap-5">
-                    { [0, 1, 2].map(i => <a href={"https://www.strokeorder.com/chinese/" + (dailyCard(i).text[0] || "")} target="blank" key={i} className={`w-14 h-14 rounded-md ${dailyCard(i).tailwind} text-2xl flex items-center justify-center mt-5`}>{dailyCard(i).text}</a>) }
+                    { [0, 1, 2].map(i => dailyCard(i)) }
                 </div>
             </div>
             {/* <button className="rounded-md bg-gray-300 hover:bg-gray-500 text-white text-xl w-32 h-16 hidden md:block">Skip</button> */}
@@ -57,7 +62,7 @@ export default function Dashboard(): React.ReactElement {
                 <p className="text-2xl text-center md:text-left">Your characters</p>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(40px,1fr))] gap-4 place-items-center p-2 text-white mt-2 md:mt-10 text-2xl">
                     {
-                        user.tokens.filter(idk => idk.punctuation === undefined).map(token => token.characters.split("").map(char => <div id={char} className={`w-12 h-12 rounded-md ${bucketToColours(token.bucket)} flex justify-center items-center`}><p>{char}</p></div>))
+                        user.tokens.filter(idk => idk.punctuation === undefined).map(token => token.characters.split("").map(char => <a href={"https://www.strokeorder.com/chinese/" + char} target="blank" key={token.characters + char} className={`w-12 h-12 rounded-md ${bucketToColours(token.bucket)} flex justify-center items-center`}><p>{char}</p></a>))
                     }
                 </div>
             </div>
